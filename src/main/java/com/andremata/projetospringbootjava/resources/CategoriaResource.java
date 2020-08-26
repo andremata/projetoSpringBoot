@@ -1,23 +1,27 @@
 package com.andremata.projetospringbootjava.resources;
 
-import java.util.Arrays;
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.andremata.projetospringbootjava.domain.Categoria;
+import com.andremata.projetospringbootjava.services.CategoriaService;
 
 @RestController
-@RequestMapping(value = "/categorias")
+@RequestMapping(value="/categorias")
 public class CategoriaResource {
 	
-	@RequestMapping(method=RequestMethod.GET)
-	public List<Categoria> consultar() {
+	@Autowired
+	private CategoriaService service;
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.GET)
+	public ResponseEntity<?> consultar(@PathVariable Integer id) {
 		
-		List<Categoria> categorias = Arrays.asList(new Categoria(1, "Informática"), new Categoria(2, "Escritório"));
+		Categoria categoria = service.consultar(id);
 		
-		return categorias;
+		return ResponseEntity.ok().body(categoria);
 	}
 }
