@@ -9,10 +9,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.andremata.projetospringbootjava.domain.Categoria;
 import com.andremata.projetospringbootjava.domain.Cidade;
+import com.andremata.projetospringbootjava.domain.Cliente;
+import com.andremata.projetospringbootjava.domain.Endereco;
 import com.andremata.projetospringbootjava.domain.Estado;
 import com.andremata.projetospringbootjava.domain.Produto;
+import com.andremata.projetospringbootjava.domain.enums.TipoCliente;
 import com.andremata.projetospringbootjava.repositories.CategoriaRepository;
 import com.andremata.projetospringbootjava.repositories.CidadeRepository;
+import com.andremata.projetospringbootjava.repositories.ClienteRepository;
+import com.andremata.projetospringbootjava.repositories.EnderecoRepository;
 import com.andremata.projetospringbootjava.repositories.EstadoRepository;
 import com.andremata.projetospringbootjava.repositories.ProdutoRepository;
 
@@ -30,6 +35,12 @@ public class ProjetoSpringBootJavaApplication implements CommandLineRunner 	{
 	
 	@Autowired
 	CidadeRepository cidadeRepository;
+	
+	@Autowired
+	ClienteRepository clienteRepository;
+	
+	@Autowired
+	EnderecoRepository enderecoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(ProjetoSpringBootJavaApplication.class, args);
@@ -66,5 +77,16 @@ public class ProjetoSpringBootJavaApplication implements CommandLineRunner 	{
 		
 		estadoRepository.saveAll(Arrays.asList(e1, e2));
 		cidadeRepository.saveAll(Arrays.asList(cd1,cd2,cd3));
+		
+		Cliente cl = new Cliente(null, "Maria Silva", "maria@gmail.com", "36378912377", TipoCliente.PESSOA_FISICA);
+		cl.getTelefones().addAll(Arrays.asList("27363323", "93838393"));
+		
+		Endereco ed1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "38220834", cl, cd1);
+		Endereco ed2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cl, cd1);
+		
+		cl.getEnderecos().addAll(Arrays.asList(ed1, ed2));
+		
+		clienteRepository.saveAll(Arrays.asList(cl));
+		enderecoRepository.saveAll(Arrays.asList(ed1, ed2));
 	}
 }
