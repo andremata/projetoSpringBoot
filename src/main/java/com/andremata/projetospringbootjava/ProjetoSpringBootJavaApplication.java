@@ -1,5 +1,6 @@
 package com.andremata.projetospringbootjava;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,35 +13,41 @@ import com.andremata.projetospringbootjava.domain.Cidade;
 import com.andremata.projetospringbootjava.domain.Cliente;
 import com.andremata.projetospringbootjava.domain.Endereco;
 import com.andremata.projetospringbootjava.domain.Estado;
+import com.andremata.projetospringbootjava.domain.Pagamento;
+import com.andremata.projetospringbootjava.domain.PagamentoBoleto;
+import com.andremata.projetospringbootjava.domain.PagamentoCartao;
+import com.andremata.projetospringbootjava.domain.Pedido;
 import com.andremata.projetospringbootjava.domain.Produto;
+import com.andremata.projetospringbootjava.domain.enums.EstadoPagamento;
 import com.andremata.projetospringbootjava.domain.enums.TipoCliente;
 import com.andremata.projetospringbootjava.repositories.CategoriaRepository;
 import com.andremata.projetospringbootjava.repositories.CidadeRepository;
 import com.andremata.projetospringbootjava.repositories.ClienteRepository;
 import com.andremata.projetospringbootjava.repositories.EnderecoRepository;
 import com.andremata.projetospringbootjava.repositories.EstadoRepository;
+import com.andremata.projetospringbootjava.repositories.PagamentoRepository;
+import com.andremata.projetospringbootjava.repositories.PedidoRepository;
 import com.andremata.projetospringbootjava.repositories.ProdutoRepository;
 
 @SpringBootApplication
 public class ProjetoSpringBootJavaApplication implements CommandLineRunner 	{
 
 	@Autowired
-	private CategoriaRepository categoriaRepository;
-	
+    private CategoriaRepository categoriaRepository;
 	@Autowired
 	private ProdutoRepository produtoRepository;
-	
 	@Autowired
-	EstadoRepository estadoRepository;
-	
+	private EstadoRepository estadoRepository;
 	@Autowired
-	CidadeRepository cidadeRepository;
-	
+	private CidadeRepository cidadeRepository;
 	@Autowired
-	ClienteRepository clienteRepository;
-	
+	private ClienteRepository clienteRepository;
 	@Autowired
-	EnderecoRepository enderecoRepository;
+	private EnderecoRepository enderecoRepository;
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(ProjetoSpringBootJavaApplication.class, args);
@@ -65,6 +72,8 @@ public class ProjetoSpringBootJavaApplication implements CommandLineRunner 	{
 		categoriaRepository.saveAll(Arrays.asList(c1, c2));
 		produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
 		
+		/********************************************************************/
+		
 		Estado e1 = new Estado(null, "Minas Gerais");
 		Estado e2 = new Estado(null, "São Paulo");
 		
@@ -78,15 +87,38 @@ public class ProjetoSpringBootJavaApplication implements CommandLineRunner 	{
 		estadoRepository.saveAll(Arrays.asList(e1, e2));
 		cidadeRepository.saveAll(Arrays.asList(cd1,cd2,cd3));
 		
-		Cliente cl = new Cliente(null, "Maria Silva", "maria@gmail.com", "36378912377", TipoCliente.PESSOA_FISICA);
-		cl.getTelefones().addAll(Arrays.asList("27363323", "93838393"));
+		/**********************************************************************/
 		
-		Endereco ed1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "38220834", cl, cd1);
-		Endereco ed2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cl, cd1);
+		Cliente cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "36378912377", TipoCliente.PESSOA_FISICA);
+		cli1.getTelefones().addAll(Arrays.asList("27363323", "93838393"));
 		
-		cl.getEnderecos().addAll(Arrays.asList(ed1, ed2));
+		Endereco ed1 = new Endereco(null, "Rua Flores", "300", "Apto 303", "Jardim", "38220834", cli1, cd1);
+		Endereco ed2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cli1, cd1);
 		
-		clienteRepository.saveAll(Arrays.asList(cl));
+		cli1.getEnderecos().addAll(Arrays.asList(ed1, ed2));
+		
+		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(ed1, ed2));
+		
+		/***********************************************************************/
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		//Cria pedidos
+		Pedido ped1 = new Pedido(null, sdf.parse("29/08/2020 22:05"), cli1, ed1);
+		Pedido ped2 = new Pedido(null, sdf.parse("30/08/2020 09:25"), cli1, ed2);
+		
+		//Associa os pagamentos
+		Pagamento pgto1 = new PagamentoCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pgto1);
+		
+		Pagamento pgto2 = new PagamentoBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("30/08/2020 00:00"), null);
+		ped2.setPagamento(pgto2);
+		
+		//Associa os pedidos ao cliente
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+		
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pgto1, pgto2));
 	}
 }
