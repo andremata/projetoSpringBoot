@@ -13,6 +13,7 @@ import com.andremata.projetospringbootjava.domain.Cidade;
 import com.andremata.projetospringbootjava.domain.Cliente;
 import com.andremata.projetospringbootjava.domain.Endereco;
 import com.andremata.projetospringbootjava.domain.Estado;
+import com.andremata.projetospringbootjava.domain.ItemPedido;
 import com.andremata.projetospringbootjava.domain.Pagamento;
 import com.andremata.projetospringbootjava.domain.PagamentoBoleto;
 import com.andremata.projetospringbootjava.domain.PagamentoCartao;
@@ -25,6 +26,7 @@ import com.andremata.projetospringbootjava.repositories.CidadeRepository;
 import com.andremata.projetospringbootjava.repositories.ClienteRepository;
 import com.andremata.projetospringbootjava.repositories.EnderecoRepository;
 import com.andremata.projetospringbootjava.repositories.EstadoRepository;
+import com.andremata.projetospringbootjava.repositories.ItemPedidoRepository;
 import com.andremata.projetospringbootjava.repositories.PagamentoRepository;
 import com.andremata.projetospringbootjava.repositories.PedidoRepository;
 import com.andremata.projetospringbootjava.repositories.ProdutoRepository;
@@ -48,6 +50,8 @@ public class ProjetoSpringBootJavaApplication implements CommandLineRunner 	{
 	private PedidoRepository pedidoRepository;
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
+	@Autowired
+	private ItemPedidoRepository itemPedidorepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(ProjetoSpringBootJavaApplication.class, args);
@@ -120,5 +124,20 @@ public class ProjetoSpringBootJavaApplication implements CommandLineRunner 	{
 		
 		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
 		pagamentoRepository.saveAll(Arrays.asList(pgto1, pgto2));
+		
+		/********************************************************************************/
+		
+		ItemPedido itemPedido1 = new ItemPedido(ped1, p1, 0.0, 1, 2000.00);
+		ItemPedido itemPedido2 = new ItemPedido(ped1, p3, 0.0, 2, 80.00);
+		ItemPedido itemPedido3 = new ItemPedido(ped2, p2, 100.00, 1, 800.00);
+		
+		ped1.getItens().addAll(Arrays.asList(itemPedido1, itemPedido2));
+		ped2.getItens().addAll(Arrays.asList(itemPedido3));
+		
+		p1.getItens().addAll(Arrays.asList(itemPedido1));
+		p2.getItens().addAll(Arrays.asList(itemPedido3));
+		p3.getItens().addAll(Arrays.asList(itemPedido2));
+		
+		itemPedidorepository.saveAll(Arrays.asList(itemPedido1, itemPedido2, itemPedido3));
 	}
 }
