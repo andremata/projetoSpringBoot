@@ -3,8 +3,6 @@ package com.andremata.projetospringbootjava.domain;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import com.andremata.projetospringbootjava.domain.enums.EstadoPagamento;
 import com.fasterxml.jackson.annotation.JsonFormat;
