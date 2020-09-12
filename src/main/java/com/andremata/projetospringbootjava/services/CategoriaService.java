@@ -1,5 +1,6 @@
 package com.andremata.projetospringbootjava.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,10 @@ public class CategoriaService {
 		Optional<Categoria> categoria = repository.findById(id);
 		
 		return categoria.orElseThrow(() -> new ObjectNotFoundException("Categoria não encontrada! Id: " + id + " Tipo: " + categoria.getClass().getName()));
+	}
+	
+	public List<Categoria> consultar() {
+		return repository.findAll();
 	}
 	
 	public Categoria incluir(Categoria categoria) {

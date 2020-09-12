@@ -1,9 +1,11 @@
 package com.andremata.projetospringbootjava.resources;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.YamlProcessor.ResolutionMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.andremata.projetospringbootjava.domain.Categoria;
+import com.andremata.projetospringbootjava.domain.dto.CategoriaDTO;
 import com.andremata.projetospringbootjava.services.CategoriaService;
 
 @RestController
@@ -28,6 +31,17 @@ public class CategoriaResource {
 		Categoria categoria = service.consultar(id);
 		
 		return ResponseEntity.ok().body(categoria);
+	}
+	
+	@RequestMapping(method=RequestMethod.GET)
+	public ResponseEntity<List<CategoriaDTO>> consultar() {
+		List<Categoria> categorias = service.consultar();
+		
+		//converte a lista de Categoria e CategoriaDTO
+		List<CategoriaDTO> categoriasDto = categorias.stream().map(cat -> new CategoriaDTO(cat)) //converte categoria e categoriadto
+											.collect(Collectors.toList()); //retorna a lista de categotiadto
+		
+		return ResponseEntity.ok().body(categoriasDto);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
