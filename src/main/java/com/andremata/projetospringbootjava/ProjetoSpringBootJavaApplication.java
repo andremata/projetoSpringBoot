@@ -61,6 +61,14 @@ public class ProjetoSpringBootJavaApplication implements CommandLineRunner 	{
 	public void run(String... args) throws Exception {
 		Categoria c1 = new Categoria(null, "Informática");
 		Categoria c2 = new Categoria(null, "Escritório");
+		Categoria c3 = new Categoria(null, "Perfumaria");
+		Categoria c4 = new Categoria(null, "Livro");
+		Categoria c5 = new Categoria(null, "Bebida");
+		Categoria c6 = new Categoria(null, "Vestuário");
+		Categoria c7 = new Categoria(null, "Jardinagem");
+		Categoria c8 = new Categoria(null, "Esporte");
+		Categoria c9 = new Categoria(null, "Decoração");
+		Categoria c10 = new Categoria(null, "Cama, mesa e banho");
 		
 		Produto p1 = new Produto(null, "Computador", 2000.00);
 		Produto p2 = new Produto(null, "Impressora", 800.00);
@@ -73,7 +81,7 @@ public class ProjetoSpringBootJavaApplication implements CommandLineRunner 	{
 		p2.getCategorias().addAll(Arrays.asList(c1, c2));
 		p3.getCategorias().addAll(Arrays.asList(c1));
 		
-		categoriaRepository.saveAll(Arrays.asList(c1, c2));
+		categoriaRepository.saveAll(Arrays.asList(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10));
 		produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
 		
 		/********************************************************************/

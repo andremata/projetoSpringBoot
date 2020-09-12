@@ -2,15 +2,16 @@ package com.andremata.projetospringbootjava.resources;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -40,6 +41,20 @@ public class CategoriaResource {
 		//converte a lista de Categoria e CategoriaDTO
 		List<CategoriaDTO> categoriasDto = categorias.stream().map(cat -> new CategoriaDTO(cat)) //converte categoria e categoriadto
 											.collect(Collectors.toList()); //retorna a lista de categotiadto
+		
+		return ResponseEntity.ok().body(categoriasDto);
+	}
+	
+	@RequestMapping(value="/pagina", method=RequestMethod.GET)
+	public ResponseEntity<Page<CategoriaDTO>> consultarPaginacao(
+			@RequestParam(value="pagina", defaultValue = "0") Integer pagina, 
+			@RequestParam(value="linhas", defaultValue = "24") Integer linhas, 
+			@RequestParam(value="ordenacao", defaultValue = "nome") String ordenacao, 
+			@RequestParam(value="direcao", defaultValue = "ASC") String direcao) {
+		
+		Page<Categoria> categorias = service.paginar(pagina, linhas, ordenacao, direcao);
+		
+		Page<CategoriaDTO> categoriasDto = categorias.map(cat -> new CategoriaDTO(cat));
 		
 		return ResponseEntity.ok().body(categoriasDto);
 	}
